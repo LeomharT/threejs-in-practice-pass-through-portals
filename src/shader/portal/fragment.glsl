@@ -15,10 +15,10 @@ void main() {
 
     vec2 p = abs(uv - center);
     vec2 q = p - (center - r);
-    
+
     if (q.x > 0.0 && q.y > 0.0) {
-        if (length(q) > r) discard;
+        if(length(q) > r) discard;
     }
- 
+  
     gl_FragColor = vec4(color, 1.0);
 }
