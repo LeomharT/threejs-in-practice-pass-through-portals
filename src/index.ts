@@ -57,7 +57,7 @@ controls2.noZoom = false;
  */
 
 const uniforms = {
-  uBorderRadius: new Uniform(0.5)
+  uBorderRadius: new Uniform(0.1)
 };
 
 const planeGeometry = new PlaneGeometry(2, 3, 32, 32);
@@ -95,7 +95,7 @@ p_portal.addBinding(uniforms.uBorderRadius, 'value', {
   label: 'Border Radius',
   step: 0.001,
   min: 0,
-  max: 1.0
+  max: 0.5
 });
 
 /**
