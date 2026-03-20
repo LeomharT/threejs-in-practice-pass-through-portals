@@ -1,6 +1,7 @@
 varying vec2 vUv;
 
 uniform float uBorderRadius;
+uniform float uTime;
 
 void main() {
     vec3  color = vec3(0.0);
@@ -13,11 +14,12 @@ void main() {
     vec2 center    = vec2(0.5);
          center.y /= ratio;
 
-    float dist = length(uv - center);
-
-    if(dist < r) {
-        color = vec3(0.127, 0.348, 0.697);
+    vec2 corner = abs(uv - center);
+    vec2 p      = corner - (center - r);
+ 
+    if(p.x > 0.0 && p.y > 0.0) {
+        if(length(p) > r) discard;
     }
-
+   
     gl_FragColor = vec4(color, 1.0);
 }

@@ -57,6 +57,7 @@ controls2.noZoom = false;
  */
 
 const uniforms = {
+  uTime: new Uniform(0),
   uBorderRadius: new Uniform(0.1)
 };
 
@@ -108,6 +109,7 @@ function render() {
   // Update
   controls2.update();
   controls1.update();
+  uniforms.uTime.value += 0.01;
 
   // Render
   renderer.render(scene, camera);
