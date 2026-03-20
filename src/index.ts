@@ -58,7 +58,8 @@ controls2.noZoom = false;
 
 const uniforms = {
   uTime: new Uniform(0),
-  uBorderRadius: new Uniform(0.1)
+  uBorderRadius: new Uniform(0.1),
+  uBorderWidth: new Uniform(0.05)
 };
 
 const planeGeometry = new PlaneGeometry(2, 3, 32, 32);
@@ -97,6 +98,12 @@ p_portal.addBinding(uniforms.uBorderRadius, 'value', {
   step: 0.001,
   min: 0,
   max: 0.5
+});
+p_portal.addBinding(uniforms.uBorderWidth, 'value', {
+  label: 'Border Width',
+  step: 0.001,
+  min: 0.0,
+  max: 1.0
 });
 
 /**
