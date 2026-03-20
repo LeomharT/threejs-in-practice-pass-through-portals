@@ -1,4 +1,6 @@
 varying vec2 vUv;
+varying vec3 vNDC;
+
 
 void main() {
     vec4 modelPosition      = modelMatrix * vec4(position, 1.0);
@@ -7,6 +9,9 @@ void main() {
 
     gl_Position = projectionPosition;
 
+    vec3 ndc = gl_Position.xyz / gl_Position.w;
+
     // Varying
-    vUv = uv;
+    vUv  = uv;
+    vNDC = ndc * 0.5 + 0.5;
 }
