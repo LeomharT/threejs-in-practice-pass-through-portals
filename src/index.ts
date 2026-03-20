@@ -4,8 +4,23 @@
  */
 
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
-import { AxesHelper, Mesh, Object3D, PerspectiveCamera, Plane, PlaneGeometry, Scene, ShaderMaterial, Uniform, Vector3, WebGLRenderer, WebGLRenderTarget } from 'three';
-import { DRACOLoader, GLTFLoader, OrbitControls, TrackballControls } from 'three/examples/jsm/Addons.js';
+import {
+  AxesHelper,
+  MathUtils,
+  Mesh,
+  Object3D,
+  PerspectiveCamera,
+  Plane,
+  PlaneGeometry,
+  Scene,
+  ShaderMaterial,
+  Timer,
+  Uniform,
+  Vector3,
+  WebGLRenderer,
+  WebGLRenderTarget
+} from 'three';
+import { DRACOLoader, GLTFLoader, OrbitControls, Sky, TrackballControls } from 'three/examples/jsm/Addons.js';
 import { Pane } from 'tweakpane';
 import './index.css';
 import portalFragmentShader from './shader/portal/fragment.glsl?raw';
@@ -51,14 +66,18 @@ controls1.enableDamping = true;
 controls1.enablePan = true;
 controls1.enableRotate = true;
 controls1.enableZoom = false;
+controls1.dampingFactor = 0.05;
 
 const controls2 = new TrackballControls(camera, renderer.domElement);
 controls2.noRotate = true;
 controls2.noPan = true;
 controls2.noZoom = false;
+controls2.dynamicDampingFactor = 0.1;
 
-const frameRenderTarget = new WebGLRenderTarget(size.width, size.height, {
-  generateMipmaps: false,
+const time = new Timer();
+
+const frameRenderTarget = new WebGLRenderTarget(size.width * 2, size.height * 2, {
+  generateMipmaps: true,
   anisotropy: 8
 });
 
@@ -89,11 +108,46 @@ const zPlane = new Plane(new Vector3(0, 0, 1), 0);
 
 gltfLoader.load('/low_poly_mccree-transformed.glb', (data) => {
   mccree = data.scene;
-
   mccree.position.y -= 2.0;
-
   scene.add(mccree);
 });
+
+const effectController = {
+  turbidity: 10,
+  rayleigh: 3,
+  mieCoefficient: 0.005,
+  mieDirectionalG: 0.7,
+  elevation: 2,
+  azimuth: 180,
+  exposure: renderer.toneMappingExposure,
+  cloudCoverage: 0.4,
+  cloudDensity: 0.4,
+  cloudElevation: 0.5
+};
+const sun = new Vector3();
+function updateSky() {
+  const uniforms = sky.material.uniforms;
+  uniforms['turbidity'].value = effectController.turbidity;
+  uniforms['rayleigh'].value = effectController.rayleigh;
+  uniforms['mieCoefficient'].value = effectController.mieCoefficient;
+  uniforms['mieDirectionalG'].value = effectController.mieDirectionalG;
+  uniforms['cloudCoverage'].value = effectController.cloudCoverage;
+  uniforms['cloudDensity'].value = effectController.cloudDensity;
+  uniforms['cloudElevation'].value = effectController.cloudElevation;
+
+  const phi = MathUtils.degToRad(90 - effectController.elevation);
+  const theta = MathUtils.degToRad(effectController.azimuth);
+
+  sun.setFromSphericalCoords(1, phi, theta);
+
+  uniforms['sunPosition'].value.copy(sun);
+
+  renderer.toneMappingExposure = effectController.exposure;
+}
+const sky = new Sky();
+sky.scale.setScalar(200);
+updateSky();
+scene.add(sky);
 
 /**
  * Helper
@@ -137,7 +191,9 @@ p_portal.addBinding(uniforms.uBorderWidth, 'value', {
 function renderPortal() {
   renderer.setRenderTarget(frameRenderTarget);
   portal.visible = false;
+  sky.visible = true;
   renderer.render(scene, camera);
+  sky.visible = false;
   portal.visible = true;
   renderer.setRenderTarget(null);
 }
@@ -159,11 +215,13 @@ function restoreModel() {
 }
 
 function render() {
+  const dt = time.getDelta();
+
   fpsGraph.begin();
 
   // Update
   controls2.update();
-  controls1.update();
+  controls1.update(dt);
   uniforms.uTime.value += 0.01;
 
   // Render
