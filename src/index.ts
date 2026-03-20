@@ -114,11 +114,11 @@ gltfLoader.load('/low_poly_mccree-transformed.glb', (data) => {
 
 const effectController = {
   turbidity: 10,
-  rayleigh: 3,
+  rayleigh: 0.5,
   mieCoefficient: 0.005,
-  mieDirectionalG: 0.7,
-  elevation: 2,
-  azimuth: 180,
+  mieDirectionalG: 0.8,
+  elevation: 90,
+  azimuth: 0.1,
   exposure: renderer.toneMappingExposure,
   cloudCoverage: 0.4,
   cloudDensity: 0.4,
@@ -141,11 +141,9 @@ function updateSky() {
   sun.setFromSphericalCoords(1, phi, theta);
 
   uniforms['sunPosition'].value.copy(sun);
-
-  renderer.toneMappingExposure = effectController.exposure;
 }
 const sky = new Sky();
-sky.scale.setScalar(200);
+sky.scale.setScalar(450000);
 updateSky();
 scene.add(sky);
 
@@ -183,6 +181,13 @@ p_portal.addBinding(uniforms.uBorderWidth, 'value', {
   min: 0.0,
   max: 1.0
 });
+
+const sky_p = pane.addFolder({ title: 'Sky' });
+sky_p
+  .addBinding(effectController, 'elevation', {
+    step: 0.1
+  })
+  .on('change', updateSky);
 
 /**
  * Events
