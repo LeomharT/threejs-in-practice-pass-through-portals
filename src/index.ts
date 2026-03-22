@@ -184,8 +184,31 @@ p_portal.addBinding(uniforms.uBorderWidth, 'value', {
 
 const sky_p = pane.addFolder({ title: 'Sky' });
 sky_p
+  .addBinding(effectController, 'turbidity', {
+    step: 0.001,
+    max: 20,
+    min: 0
+  })
+  .on('change', updateSky);
+sky_p
   .addBinding(effectController, 'elevation', {
-    step: 0.1
+    step: 1,
+    max: 180,
+    min: 0
+  })
+  .on('change', updateSky);
+sky_p
+  .addBinding(effectController, 'azimuth', {
+    step: 1,
+    max: 360,
+    min: 0
+  })
+  .on('change', updateSky);
+sky_p
+  .addBinding(effectController, 'rayleigh', {
+    step: 0.01,
+    max: 1.5,
+    min: 0
   })
   .on('change', updateSky);
 
@@ -196,9 +219,7 @@ sky_p
 function renderPortal() {
   renderer.setRenderTarget(frameRenderTarget);
   portal.visible = false;
-  sky.visible = true;
   renderer.render(scene, camera);
-  sky.visible = false;
   portal.visible = true;
   renderer.setRenderTarget(null);
 }
