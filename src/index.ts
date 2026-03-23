@@ -40,7 +40,7 @@ const el = document.querySelector('#root');
  * Loader
  */
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('/node_modules/three/examples/jsm/libs/draco/');
+dracoLoader.setDecoderPath('/libs/draco/');
 dracoLoader.setDecoderConfig({ type: 'js' });
 dracoLoader.preload();
 
