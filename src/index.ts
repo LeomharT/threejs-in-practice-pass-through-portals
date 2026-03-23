@@ -4,7 +4,22 @@
  */
 
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
-import { AxesHelper, Mesh, Object3D, PerspectiveCamera, Plane, PlaneGeometry, Scene, ShaderMaterial, Timer, Uniform, Vector3, WebGLRenderer, WebGLRenderTarget } from 'three';
+import {
+  ACESFilmicToneMapping,
+  AxesHelper,
+  Mesh,
+  Object3D,
+  PerspectiveCamera,
+  Plane,
+  PlaneGeometry,
+  Scene,
+  ShaderMaterial,
+  Timer,
+  Uniform,
+  Vector3,
+  WebGLRenderer,
+  WebGLRenderTarget
+} from 'three';
 import { DRACOLoader, GLTFLoader, OrbitControls, Sky, TrackballControls } from 'three/examples/jsm/Addons.js';
 import { Pane } from 'tweakpane';
 import './index.css';
@@ -90,7 +105,12 @@ scene.add(portal);
 let mccree: Object3D | undefined;
 const yPlane = new Plane(new Vector3(0, 1, 0), 1);
 const zPlane = new Plane(new Vector3(0, 0, 1), 0);
-
+/*
+  Author: Seafoam (https://sketchfab.com/seafoam)
+  License: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+  Source: https://sketchfab.com/3d-models/low-poly-mccree-38aedc02c0b2412babdc4d0eac7c6803
+  Title: Low poly McCree
+*/
 gltfLoader.load('/low_poly_mccree-transformed.glb', (data) => {
   mccree = data.scene;
   mccree.position.y -= 2.0;
@@ -126,6 +146,9 @@ function updateSky() {
   sun.x = Math.cos(phi);
   sun.y = Math.sin(theta);
   sun.z = Math.sin(phi);
+
+  renderer.toneMapping = ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.25;
 
   uniforms['sunPosition'].value.copy(sun);
 }
