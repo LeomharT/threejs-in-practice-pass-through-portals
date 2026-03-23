@@ -21,6 +21,8 @@ import {
   WebGLRenderTarget
 } from 'three';
 import { DRACOLoader, GLTFLoader, OrbitControls, Sky, TrackballControls } from 'three/examples/jsm/Addons.js';
+// @ts-ignore
+import { Text } from 'troika-three-text';
 import { Pane } from 'tweakpane';
 import './index.css';
 import portalFragmentShader from './shader/portal/fragment.glsl?raw';
@@ -130,6 +132,7 @@ const effectController = {
   cloudElevation: 0.5
 };
 const sun = new Vector3();
+
 function updateSky() {
   const uniforms = sky.material.uniforms;
   uniforms['turbidity'].value = effectController.turbidity;
@@ -148,7 +151,7 @@ function updateSky() {
   sun.z = Math.sin(phi);
 
   renderer.toneMapping = ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.25;
+  renderer.toneMappingExposure = 1.5;
 
   uniforms['sunPosition'].value.copy(sun);
 }
@@ -156,6 +159,39 @@ const sky = new Sky();
 sky.scale.setScalar(450000);
 updateSky();
 scene.add(sky);
+
+const text = new Text();
+text.text = 'Jesse';
+text.fontSize = 0.3;
+text.position.y = 0.8;
+text.position.x = -0.32;
+text.position.z = 0.01;
+text.color = '#000';
+
+text.sync();
+scene.add(text);
+
+const text1 = new Text();
+text1.text = 'McCree';
+text1.fontSize = 0.05;
+text1.position.y = -0.67;
+text1.position.x = 0;
+text1.position.z = 0.01;
+text1.color = '#000';
+
+text1.sync();
+scene.add(text1);
+
+const text2 = new Text();
+text2.text = '/01';
+text2.fontSize = 0.15;
+text2.position.y = -0.558;
+text2.position.x = 0.23;
+text2.position.z = 0.02;
+text2.color = '#000';
+
+text2.sync();
+scene.add(text2);
 
 /**
  * Helper
