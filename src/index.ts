@@ -198,6 +198,7 @@ scene.add(text2);
  */
 
 const axesHelper = new AxesHelper(1);
+axesHelper.visible = false;
 scene.add(axesHelper);
 
 /**
@@ -213,6 +214,8 @@ const fpsGraph: any = pane.addBlade({
   label: undefined,
   rows: 3
 });
+
+pane.addBinding(axesHelper, 'visible', {});
 
 const p_portal = pane.addFolder({ title: '🕳️ Portal' });
 p_portal.addBinding(uniforms.uBorderRadius, 'value', {
