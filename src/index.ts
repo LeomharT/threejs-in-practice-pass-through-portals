@@ -4,22 +4,7 @@
  */
 
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
-import {
-  AxesHelper,
-  MathUtils,
-  Mesh,
-  Object3D,
-  PerspectiveCamera,
-  Plane,
-  PlaneGeometry,
-  Scene,
-  ShaderMaterial,
-  Timer,
-  Uniform,
-  Vector3,
-  WebGLRenderer,
-  WebGLRenderTarget
-} from 'three';
+import { AxesHelper, Mesh, Object3D, PerspectiveCamera, Plane, PlaneGeometry, Scene, ShaderMaterial, Timer, Uniform, Vector3, WebGLRenderer, WebGLRenderTarget } from 'three';
 import { DRACOLoader, GLTFLoader, OrbitControls, Sky, TrackballControls } from 'three/examples/jsm/Addons.js';
 import { Pane } from 'tweakpane';
 import './index.css';
@@ -117,7 +102,7 @@ const effectController = {
   rayleigh: 0.5,
   mieCoefficient: 0.005,
   mieDirectionalG: 0.8,
-  elevation: 90,
+  elevation: 0.6,
   azimuth: 0.1,
   exposure: renderer.toneMappingExposure,
   cloudCoverage: 0.4,
@@ -135,10 +120,12 @@ function updateSky() {
   uniforms['cloudDensity'].value = effectController.cloudDensity;
   uniforms['cloudElevation'].value = effectController.cloudElevation;
 
-  const phi = MathUtils.degToRad(90 - effectController.elevation);
-  const theta = MathUtils.degToRad(effectController.azimuth);
+  const theta = Math.PI * (effectController.elevation - 0.5);
+  const phi = 2 * Math.PI * (effectController.azimuth - 0.5);
 
-  sun.setFromSphericalCoords(1, phi, theta);
+  sun.x = Math.cos(phi);
+  sun.y = Math.sin(theta);
+  sun.z = Math.sin(phi);
 
   uniforms['sunPosition'].value.copy(sun);
 }
@@ -219,7 +206,9 @@ sky_p
 function renderPortal() {
   renderer.setRenderTarget(frameRenderTarget);
   portal.visible = false;
+  sky.visible = true;
   renderer.render(scene, camera);
+  sky.visible = false;
   portal.visible = true;
   renderer.setRenderTarget(null);
 }
