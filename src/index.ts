@@ -205,8 +205,11 @@ scene.add(axesHelper);
  * Pane
  */
 
+const isDebug = location.hash === '#debug';
+
 const pane = new Pane({ title: 'Pass Through Portals' });
 pane.element.parentElement!.style.width = '380px';
+pane.element.parentElement!.style.visibility = isDebug ? 'visiable' : 'hidden';
 pane.registerPlugin(EssentialsPlugin);
 
 const fpsGraph: any = pane.addBlade({
