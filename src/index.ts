@@ -80,6 +80,7 @@ const time = new Timer();
 
 const frameRenderTarget = new WebGLRenderTarget(size.width * 2, size.height * 2, {
   generateMipmaps: true,
+  samples: 4,
   anisotropy: 8
 });
 
@@ -99,7 +100,8 @@ const planeGeometry = new PlaneGeometry(1, uniforms.uGoldenRatio.value, 32, 32);
 const portalMaterial = new ShaderMaterial({
   uniforms,
   vertexShader: portalVertexShader,
-  fragmentShader: portalFragmentShader
+  fragmentShader: portalFragmentShader,
+  transparent: true
 });
 const portal = new Mesh(planeGeometry, portalMaterial);
 scene.add(portal);
